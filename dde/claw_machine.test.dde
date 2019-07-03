@@ -19,6 +19,7 @@ function claw_points(points, offset){
         CMD.push(Dexter.sleep(1))
         CMD.push(Dexter.empty_instruction_queue())
         CMD.push(Dexter.move_to(points[i], undefined, undefined, undefined, 0, close))
+        CMD.push(Dexter.sleep(1))
         CMD.push(Dexter.empty_instruction_queue())
         CMD.push(Dexter.move_to(points[i], undefined, undefined, undefined, 0, close))
         CMD.push(Dexter.empty_instruction_queue())
@@ -32,6 +33,8 @@ function claw_points(points, offset){
 new Job({
 	name: "claw_machine",
     do_list: [
+    	Dexter.set_parameter("RebootServo", 1),
+    	Dexter.set_parameter("RebootServo", 3),
     	function(){return claw_points(my_points, [0, 0, 5 * _in])}
     ]
 })
@@ -39,6 +42,8 @@ new Job({
 new Job({
 	name: "gripper_test",
     do_list: [
+    	Dexter.set_parameter("RebootServo", 1),
+    	Dexter.set_parameter("RebootServo", 3),
     	Dexter.move_all_joints([0, 0, 0, 0, 0, 0, open]),
         Dexter.empty_instruction_queue(),
         Dexter.move_all_joints([0, 0, 90, 0, 0, 0, open]),
