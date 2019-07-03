@@ -1,0 +1,52 @@
+
+var my_points = [
+	[0.2, 0.4, .1],
+    [0.1, 0.3, .1],
+	[-0.1, 0.5, .1]
+]
+
+var open = 150
+var close = 30
+
+function claw_points(points, offset){
+	let CMD = []
+    for(let i = 0; i < my_points.length; i++){
+    	CMD.push(Dexter.move_to(Vector.add(points[i], offset)))
+        CMD.push(Dexter.empty_instruction_queue())
+        CMD.push(Dexter.move_to(Vector.add(points[i], offset), undefined, undefined, undefined, 0, open))
+        CMD.push(Dexter.empty_instruction_queue())
+        CMD.push(Dexter.move_to(points[i], undefined, undefined, undefined, 0, open))
+        CMD.push(Dexter.sleep(1))
+        CMD.push(Dexter.empty_instruction_queue())
+        CMD.push(Dexter.move_to(points[i], undefined, undefined, undefined, 0, close))
+        CMD.push(Dexter.empty_instruction_queue())
+        CMD.push(Dexter.move_to(points[i], undefined, undefined, undefined, 0, close))
+        CMD.push(Dexter.empty_instruction_queue())
+        CMD.push(Dexter.move_to(Vector.add(points[i], offset), undefined, undefined, undefined, 0, close))
+        CMD.push(Dexter.empty_instruction_queue())
+    }
+    CMD.push(Dexter.move_all_joints([0, 0, 0, 0, 0]))
+    return CMD
+}
+
+new Job({
+	name: "claw_machine",
+    do_list: [
+    	function(){return claw_points(my_points, [0, 0, 5 * _in])}
+    ]
+})
+
+new Job({
+	name: "gripper_test",
+    do_list: [
+    	Dexter.move_all_joints([0, 0, 0, 0, 0, 0, open]),
+        Dexter.empty_instruction_queue(),
+        Dexter.move_all_joints([0, 0, 90, 0, 0, 0, open]),
+        Dexter.empty_instruction_queue(),
+        Dexter.move_all_joints([0, 0, 90, 0, 0, 30, close]),
+        Dexter.empty_instruction_queue(),
+        Dexter.move_all_joints([0, 0, 0, 0, 0, 0, close]),
+        Dexter.empty_instruction_queue()
+    ]
+})
+
