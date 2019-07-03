@@ -1,0 +1,13 @@
+var prize = [0.3, 0.5, 0.4]
+var exit_hole = [-0.2, 0.4, 0.1]
+
+new Job ({name: "claw.game",
+                 do.list: [Dexter.move_to([prize[0], prize[1], prize[2] + 0.5], [0, 0, 1]
+                 Dexter.move_to(prize, [0, 0, 1]),
+                 Dexter.move_to([exit_hole[0], exit_hole[1], exit_hole[2] + 0.5], [0, 0, 1]
+                 Dexter.move_to(exit, [0, 0, 1]),
+                 
+                ]
+
+
+}]
