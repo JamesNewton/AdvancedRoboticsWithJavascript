@@ -5,6 +5,11 @@ Hints:
 - Assume options may be added or removed. e.g. assemble the parts in the standard union / difference pattern.
 
 When you have improved the file even the smallest amount, save the change and do a merge request. 
+- Edit the file to make your changes (on GitHub, use the pencil icon next to trash icon)
+- When you are done editing, Commit your changes (scroll down, click Commit)
+- Make a pull request. (green and white "New Pull Request" button.)
+- Assuming your branch is now different from the authors (because you commited a change) you should be able to click "Create Pull Requst"
+
 Note: your request may or may not be merged. 
 - You can fork the project and try to attract other developers attention
 - You can edit your files to better merge
