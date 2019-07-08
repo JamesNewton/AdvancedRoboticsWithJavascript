@@ -17,6 +17,6 @@ Note: your request may or may not be merged.
 */
 
 function main(params) {
-  var car = []
+  var car = [cube()]
   return car
   }
