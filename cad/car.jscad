@@ -16,7 +16,35 @@ Note: your request may or may not be merged.
 
 */
 
+function getParameterDefinitions() {
+    return [
+        { name: 'carLength', type: 'int', initial: 43, caption: 'Length?' }, 
+        { name: 'carWidth', type: 'int', initial: 20, caption: 'Width?' },
+        { name: 'carHight', type: 'int', initial: 18, caption: 'Hight?' },
+        { name: 'wheelRadius', type: 'int', initial: 4, caption: 'Wheel radius?' },
+        { name: 'hubRadius', type: 'int', initial: 3, caption: 'Hub radius?' },
+        { name: 'frontWheelOffset', type: 'int', initial: 3, caption: 'Front wheel offset?' },
+        { name: 'backWheelOffset', type: 'int', initial: 3, caption: 'Back wheel offset?' },
+    ];
+}
+
 function main(params) {
-  var car = [cube()]
-  return car
-  }
+  var l = params.carLength;
+  var w = params.carWidth;
+  var h = params.carHight;
+  var wheelR = params.wheelRadius;
+  var hubR = params.hubRadius;
+  var frontWheelOffset = params.frontWheelOffset;
+  var backWheelOffset = params.backWheelOffset;
+  //return (translate([-l/2,-w/2,0],cube([l,w,h])));
+    //return (translate(l/2 - frontWheelOffset - wheelR, w/2, wheelR, rotate([90,0,0], cylinder({r: wheelR + 1, h: 10}))));
+    var carChasis = [difference(
+            difference(
+                translate([-l/2,-w/2,wheelR],cube([l,w,h])),
+                translate([l/2 - frontWheelOffset - wheelR, w/2, wheelR], rotate([90,0,0], cylinder({r: wheelR + 1, h: 3})))
+            ),
+            translate([l/2 - frontWheelOffset - wheelR, -w/2, wheelR], rotate([90,0,0], cylinder({r: wheelR + 1, h: -3})))
+        )];
+    return (carChasis);
+    
+}
