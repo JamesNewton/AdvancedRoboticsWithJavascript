@@ -16,7 +16,33 @@ Note: your request may or may not be merged.
 
 */
 
-function main(params) {
-  var car = [cube()]
-  return car
+function axel(length, diameter){
+ var axel = cylinder({r:diameter/2, h:length});
+return axel.rotateY(90);}
+ 
+ function wheel1(axelLength, diameter, width){
+     var wheel1 = cylinder({r:diameter/2, l:width +20}).rotateY(90);
+     wheel = intersection(wheel1,translate([-width/2,-diameter/2,-diameter/2],
+     cube([width,diameter+20 , diameter + 20])));
+     return translate([axelLength, 0, 0],wheel);
+ }
+  function wheel2(axelLength, diameter, width){
+     var wheel2 = cylinder({r:diameter/2, l:width +20}).rotateY(90);
+     wheel = intersection(wheel2,translate([-width/2,-diameter/2,-diameter/2],
+     cube([width,diameter+20 , diameter + 20])));
+     return wheel;
+ }
+
+function getParameterDefinitions(){
+    return[{name:wheel1_width, type:int, initial:5, caption:wheel1_width},
+    {name:wheel1_diameter, type:int, initial:15, caption:wheel1_diameter},
+    {name:wheel2_width, type:int, initial:5, caption:wheel2_width},
+    {name:wheel2_diameter, type:int, initial:15, caption:wheel2_diameter},
+    {name:axel_length, type:int, initial:15, caption:axel_length},
+    {name:axel_diameter, type:int, initial:5, caption:axel_diameter}];
+}
+function main(params) {return union(wheel1(axel_length,wheel1_diameter,wheel1_width),
+axel(axel_length,axel_diameter),
+wheel2(axel_length,wheel2_diameter,wheel2_width))
+
   }
