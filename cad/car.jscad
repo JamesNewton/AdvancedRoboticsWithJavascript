@@ -15,8 +15,13 @@ Note: your request may or may not be merged.
 - You can edit your files to better merge
 
 */
-
-function main(params) {
-  var car = [cube()]
-  return car
+function axel(length, diameter){
+ var axel = cylinder({r:diameter/2, h:length})
+return axel.rotateX(90)
+ 
+}
+L = 25, D = 5
+function main(params) {return union(
+   translate([0,0,D/2+15],axel(L,D)),
+  cube([5, 5, 5]))
   }
