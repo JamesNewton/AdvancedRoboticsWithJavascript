@@ -16,18 +16,19 @@ Note: your request may or may not be merged.
 
 function getParameterDefinitions() {
     return [
-        { name: 'carLength', type: 'int', initial: 43, caption: 'Length of the car' }, 
-        { name: 'carWidth', type: 'int', initial: 20, caption: 'Width of the car' },
-        { name: 'carHeight', type: 'int', initial: 18, caption: 'Height of the car' },
-        { name: 'wheelRadius', type: 'int', initial: 4, caption: 'Radius of the wheel' },
-        { name: 'axelRadius', type: 'float', initial: 3, caption: 'Radius of the axel' },
-        { name: 'frontWheelOffset', type: 'int', initial: 3, caption: 'Offset for the front wheel' },
-        { name: 'backWheelOffset', type: 'int', initial: 3, caption: 'Offset for the back wheel' },
-        { name: 'numSpokes', type: 'int', initial: 8, caption: 'Number of spokes'}, 
-        { name: 'hubRadius', type: 'int', initial: 1, caption: 'Radius of the wheel hub'},
-        { name: 'wheelWidth', type: 'int', initial: 2, caption: 'Width of the wheel'},
-        { name: 'windAngle', type: 'int', initial: 45, min: 0, max: 80, caption: 'Front thingy angle?' },
-        { name: 'windAngle2', type: 'int', initial: 30, min: 0, max: 80, caption: 'Back thingy angle?' }
+        {name: 'carLength', type: 'int', initial: 43, caption: 'Length of the car' }, 
+        {name: 'carWidth', type: 'int', initial: 20, caption: 'Width of the car' },
+        {name: 'carHeight', type: 'int', initial: 18, caption: 'Height of the car' },
+        {name: 'wheelRadius', type: 'int', initial: 4, caption: 'Radius of the wheel' },
+        {name: 'axelRadius', type: 'float', initial: 3, caption: 'Radius of the axel' },
+        {name: 'frontWheelOffset', type: 'int', initial: 3, caption: 'Offset for the front wheel' },
+        {name: 'backWheelOffset', type: 'int', initial: 3, caption: 'Offset for the back wheel' },
+        {name: 'numSpokes', type: 'int', initial: 8, caption: 'Number of spokes'}, 
+        {name: 'hubRadius', type: 'float', initial: 1, caption: 'Radius of the wheel hub'},
+        {name: 'wheelWidth', type: 'int', initial: 2, caption: 'Width of the wheel'},
+        {name: 'grooveDepth', type: 'float', initial: 0.25, caption: 'Depth of the wheel\'s groove'},
+        {name: 'windAngle', type: 'int', initial: 45, min: 0, max: 80, caption: 'Front thingy angle?' },
+        {name: 'windAngle2', type: 'int', initial: 30, min: 0, max: 80, caption: 'Back thingy angle?' }
     ];
 }
 
@@ -89,11 +90,11 @@ function chassis(l, w, h, wheelR, axelR, frontWheelOffset, backWheelOffset, wind
                 axel(w, axelR)
                 ),
             // front wheels
-            wheel(params.numSpokes, params.hubRadius, axelR, params.wheelWidth, wheelR, l/2 - frontWheelOffset - wheelR, -w),
-            wheel(params.numSpokes, params.hubRadius, axelR, params.wheelWidth, wheelR, l/2 - frontWheelOffset - wheelR, w),
+            wheel(params.numSpokes, params.hubRadius, axelR, params.wheelWidth, wheelR, params.grooveDepth, l/2 - frontWheelOffset - wheelR, -w),
+            wheel(params.numSpokes, params.hubRadius, axelR, params.wheelWidth, wheelR, params.grooveDepth, l/2 - frontWheelOffset - wheelR, w),
             // back wheels
-            wheel(params.numSpokes, params.hubRadius, axelR, params.wheelWidth, wheelR, -l/2 + backWheelOffset + wheelR, -w),
-            wheel(params.numSpokes, params.hubRadius, axelR, params.wheelWidth, wheelR, -l/2 + backWheelOffset + wheelR, w)
+            wheel(params.numSpokes, params.hubRadius, axelR, params.wheelWidth, wheelR, params.grooveDepth, -l/2 + backWheelOffset + wheelR, -w),
+            wheel(params.numSpokes, params.hubRadius, axelR, params.wheelWidth, wheelR, params.grooveDepth, -l/2 + backWheelOffset + wheelR, w)
         )
     ];
 }
@@ -103,10 +104,16 @@ function axel(length, radius){
     return axel.rotateX(-90);
     }
 
-function wheel(numSpokes, hubRadius, axelR, width, radius, x, y) {
+function wheel(numSpokes, hubRadius, axelR, width, radius, grooveDepth, x, y) {
     var outside = difference(
         cylinder({r: radius, h: width}),
-        cylinder({r: radius - 0.5, h: width})
+        cylinder({r: radius - (grooveDepth * 1.5), h: width}),
+        translate([0, 0, width / 4],
+            difference(
+                cylinder({r: radius, h: width / 2}),
+                cylinder({r: radius - grooveDepth, h: width / 2})
+            )
+        )
     );
     var hub = cylinder({r: hubRadius, h: width});
     var spokes = [];
@@ -120,7 +127,13 @@ function wheel(numSpokes, hubRadius, axelR, width, radius, x, y) {
     return translate([x, y, radius],
         difference(
             union(outside, hub, union(spokes)), 
-            cylinder({r: axelR, h: width})
+            cylinder({r: axelR, h: width}),
+            translate([0, 0, width / 4],
+                difference(
+                    cylinder({r: radius, h: width / 2}),
+                    cylinder({r: radius - grooveDepth, h: width / 2})
+                )
+            )
         )
     );
 }
