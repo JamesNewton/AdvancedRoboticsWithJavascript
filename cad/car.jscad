@@ -31,11 +31,24 @@ function getParameterDefinitions() {
     ];
 }
 
+function body(l,w,h) {
+    return translate([0,w/2,h/2],
+      rotate([0,90,0],
+      union(
+        translate([0,0,w/4],cylinder({r: w/2, h: l-w/2})),
+        translate([0,0,l-w/4], sphere({r: w/2})),
+        translate([0,0,w/4], sphere({r: w/2}))
+        )
+      )
+    )
+
+}
+
 function chassis(l, w, h, wheelR, hubR, frontWheelOffset, backWheelOffset, windAngle, windAngle2) {
   return [ 
     union(
         difference(
-            translate([-l/2,-w/2,wheelR],cube([l,w,h])),
+            translate([-l/2,-w/2,wheelR], body(l,w,h)),//cube([l,w,h])),
 // scoop out front wheel wells
             translate([l/2 - frontWheelOffset - wheelR, w/2, wheelR], 
                 rotate([90,0,0], cylinder({r: wheelR + 1, h: 3}))
@@ -57,13 +70,13 @@ function chassis(l, w, h, wheelR, hubR, frontWheelOffset, backWheelOffset, windA
 // cut off front windsheld
             translate([l/2, -w/2, wheelR * 2], 
                 rotate([0,-windAngle,0], 
-                    cube([l,w,h*2])
+                    translate([0,0,-h/2],cube([l,w,h*4]))
                     )
                 ),
 // cut off back windsheld
             translate([-l/2, -w/2, wheelR * 2], 
                 rotate([0,windAngle2,0], 
-                    cube([-l,w,h*2])
+                    translate([0,0,-h/2],cube([-l,w,h*2]))
                     )
                 )
             ),
@@ -138,16 +151,3 @@ function main(params) {
     
 }
 
-function main() {
-  return translate([0,0,4],
-      rotate([0,90,0],
-      union(
-    cylinder({r: 3, h: 15}),
-    translate([2,3,2], sphere({r: 2})),
-    translate([2,3,12], sphere({r: 2})),
-    translate([2,-3,2], sphere({r: 2})),
-    translate([2,-3,12], sphere({r: 2}))
-    )
-    )
-    )
-}
