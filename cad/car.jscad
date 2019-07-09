@@ -26,11 +26,12 @@ function getParameterDefinitions() {
         { name: 'numSpokes', type: 'int', initial: 8, caption: 'number of spokes'}, 
         { name: 'hubDiam', type: 'float', initial: 1, caption: 'diameter of the wheel hub'},
         { name: 'wheelWidth', type: 'int', initial: 2, caption: 'width of the wheel'},
-        { name: 'windAngle', type: 'int', initial: 45, min: 0, max: 80, caption: 'Front thingy angle?' }
+        { name: 'windAngle', type: 'int', initial: 45, min: 0, max: 80, caption: 'Front thingy angle?' },
+        { name: 'windAngle2', type: 'int', initial: 30, min: 0, max: 80, caption: 'Back thingy angle?' }
     ];
 }
 
-function chassis(l, w, h, wheelR, hubR, frontWheelOffset, backWheelOffset, windAngle) {
+function chassis(l, w, h, wheelR, hubR, frontWheelOffset, backWheelOffset, windAngle, windAngle2) {
   return [ 
     union(
         difference(
@@ -46,6 +47,11 @@ function chassis(l, w, h, wheelR, hubR, frontWheelOffset, backWheelOffset, windA
             translate([l/2, -w/2, wheelR * 2], 
                 rotate([0,-windAngle,0], 
                     cube([l,w,h*2])
+                    )
+                ),
+            translate([-l/2, -w/2, wheelR * 2], 
+                rotate([0,windAngle2,0], 
+                    cube([-l,w,h*2])
                     )
                 )
             ),
@@ -99,9 +105,10 @@ function main(params) {
   var frontWheelOffset = params.frontWheelOffset;
   var backWheelOffset = params.backWheelOffset;
   var windAngle = params.windAngle;
+  var windAngle2 = params.windAngle2;
   //return (translate([-l/2,-w/2,0],cube([l,w,h])));
     //return (translate(l/2 - frontWheelOffset - wheelR, w/2, wheelR, rotate([90,0,0], cylinder({r: wheelR + 1, h: 10}))));
-    var carChasis = chassis(l, w, h, wheelR, hubR, frontWheelOffset, backWheelOffset, windAngle);
+    var carChasis = chassis(l, w, h, wheelR, hubR, frontWheelOffset, backWheelOffset, windAngle, windAngle2);
     return (carChasis );
     
 }
