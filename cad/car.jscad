@@ -36,6 +36,7 @@ function chassis(l, w, h, wheelR, hubR, frontWheelOffset, backWheelOffset, windA
     union(
         difference(
             translate([-l/2,-w/2,wheelR],cube([l,w,h])),
+// scoop out front wheel wells
             translate([l/2 - frontWheelOffset - wheelR, w/2, wheelR], 
                 rotate([90,0,0], cylinder({r: wheelR + 1, h: 3}))
                 ),
@@ -44,24 +45,48 @@ function chassis(l, w, h, wheelR, hubR, frontWheelOffset, backWheelOffset, windA
                     cylinder({r: wheelR + 1, h: -3})
                     )
                 ),
+// scoop out back wheel wells
+            translate([-l/2 + backWheelOffset + wheelR, w/2, wheelR], 
+                rotate([90,0,0], cylinder({r: wheelR + 1, h: 3}))
+                ),
+            translate([-l/2 + backWheelOffset + wheelR, -w/2, wheelR], 
+                rotate([90,0,0], 
+                    cylinder({r: wheelR + 1, h: -3})
+                    )
+                ),
+// cut off front windsheld
             translate([l/2, -w/2, wheelR * 2], 
                 rotate([0,-windAngle,0], 
                     cube([l,w,h*2])
                     )
                 ),
+// cut off back windsheld
             translate([-l/2, -w/2, wheelR * 2], 
                 rotate([0,windAngle2,0], 
                     cube([-l,w,h*2])
                     )
                 )
             ),
+// front axle
         translate([l/2 - frontWheelOffset - wheelR, -w/2, wheelR], 
             axel(w,hubR)
             ),
+// back axle
+        translate([-l/2 + backWheelOffset + wheelR, -w/2, wheelR], 
+            axel(w,hubR)
+            ),
+// front wheels
         translate([l/2 - frontWheelOffset - wheelR, -w, wheelR], 
             wheel(params.numSpokes, params.hubDiam, params.wheelWidth, wheelR*2, 0, 0)
             ),
         translate([l/2 - frontWheelOffset - wheelR, w, wheelR], 
+            wheel(params.numSpokes, params.hubDiam, params.wheelWidth, wheelR*2, 0, 0)
+            ),
+// bacl wheels
+        translate([-l/2 + backWheelOffset + wheelR, -w, wheelR], 
+            wheel(params.numSpokes, params.hubDiam, params.wheelWidth, wheelR*2, 0, 0)
+            ),
+        translate([-l/2 + backWheelOffset + wheelR, w, wheelR], 
             wheel(params.numSpokes, params.hubDiam, params.wheelWidth, wheelR*2, 0, 0)
             )
         )
