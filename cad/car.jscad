@@ -1,21 +1,3 @@
-/* Edit this file to make it closer to a car which can be 3D printed.
-Hints:
-- Use a modular approach. e.g. write a function which returns a wheel
-- Allow for intelligent scaling. e.g. the wheel function should take parameters that specify the hub size, tire width, diameter, etc...
-- Assume options may be added or removed. e.g. assemble the parts in the standard union / difference pattern.
-
-When you have improved the file even the smallest amount, save the change and do a merge request. 
-- Edit the file to make your changes (on GitHub, use the pencil icon next to trash icon)
-- When you are done editing, Commit your changes (scroll down, click Commit)
-- Make a pull request. (green and white "New Pull Request" button.)
-- Assuming your branch is now different from the authors (because you commited a change) you should be able to click "Create Pull Requst"
-
-Note: your request may or may not be merged. 
-- You can fork the project and try to attract other developers attention
-- You can edit your files to better merge
-
-*/
-
 function getParameterDefinitions() {
     return [
         { name: 'carLength', type: 'int', initial: 43, caption: 'Length?' }, 
@@ -28,6 +10,31 @@ function getParameterDefinitions() {
     ];
 }
 
+function chassis(l, w, h, wheelR, hubR, frontWheelOffset, backWheelOffset) {
+  return [ 
+    union(
+        difference(
+            translate([-l/2,-w/2,wheelR],cube([l,w,h])),
+            translate([l/2 - frontWheelOffset - wheelR, w/2, wheelR], 
+                rotate([90,0,0], cylinder({r: wheelR + 1, h: 3}))
+                ),
+            translate([l/2 - frontWheelOffset - wheelR, -w/2, wheelR], 
+                rotate([90,0,0], 
+                    cylinder({r: wheelR + 1, h: -3})
+                    )
+                )
+            ),
+        translate([l/2 - frontWheelOffset - wheelR, -w/2, wheelR], 
+            axel(w,hubR)
+            )
+        )
+    ]
+}
+function axel(length, diameter){
+    var axel = cylinder({r:diameter/2, h:length})
+    return axel.rotateX(-90)
+    }
+
 function main(params) {
   var l = params.carLength;
   var w = params.carWidth;
@@ -38,13 +45,7 @@ function main(params) {
   var backWheelOffset = params.backWheelOffset;
   //return (translate([-l/2,-w/2,0],cube([l,w,h])));
     //return (translate(l/2 - frontWheelOffset - wheelR, w/2, wheelR, rotate([90,0,0], cylinder({r: wheelR + 1, h: 10}))));
-    var carChasis = [difference(
-            difference(
-                translate([-l/2,-w/2,wheelR],cube([l,w,h])),
-                translate([l/2 - frontWheelOffset - wheelR, w/2, wheelR], rotate([90,0,0], cylinder({r: wheelR + 1, h: 3})))
-            ),
-            translate([l/2 - frontWheelOffset - wheelR, -w/2, wheelR], rotate([90,0,0], cylinder({r: wheelR + 1, h: -3})))
-        )];
-    return (carChasis);
+    var carChasis = chassis(l, w, h, wheelR, hubR, frontWheelOffset, backWheelOffset);
+    return (carChasis );
     
 }
