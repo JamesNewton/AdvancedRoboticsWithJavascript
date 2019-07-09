@@ -16,138 +16,115 @@ Note: your request may or may not be merged.
 
 function getParameterDefinitions() {
     return [
-        { name: 'carLength', type: 'int', initial: 43, caption: 'Length?' }, 
-        { name: 'carWidth', type: 'int', initial: 20, caption: 'Width?' },
-        { name: 'carHight', type: 'int', initial: 18, caption: 'Hight?' },
-        { name: 'wheelRadius', type: 'int', initial: 4, caption: 'Wheel radius?' },
-        { name: 'hubRadius', type: 'int', initial: 3, caption: 'Hub radius?' },
-        { name: 'frontWheelOffset', type: 'int', initial: 3, caption: 'Front wheel offset?' },
-        { name: 'backWheelOffset', type: 'int', initial: 3, caption: 'Back wheel offset?' },
-        { name: 'numSpokes', type: 'int', initial: 8, caption: 'number of spokes'}, 
-        { name: 'hubDiam', type: 'float', initial: 1, caption: 'diameter of the wheel hub'},
-        { name: 'wheelWidth', type: 'int', initial: 2, caption: 'width of the wheel'},
+        { name: 'carLength', type: 'int', initial: 43, caption: 'Length of the car' }, 
+        { name: 'carWidth', type: 'int', initial: 20, caption: 'Width of the car' },
+        { name: 'carHeight', type: 'int', initial: 18, caption: 'Height of the car' },
+        { name: 'wheelRadius', type: 'float', initial: 4, caption: 'Radius of the wheel' },
+        { name: 'axelRadius', type: 'float', initial: 3, caption: 'Radius of the axel' },
+        { name: 'frontWheelOffset', type: 'int', initial: 3, caption: 'Offset for the front wheel' },
+        { name: 'backWheelOffset', type: 'int', initial: 3, caption: 'Offset for the back wheel' },
+        { name: 'numSpokes', type: 'int', initial: 8, caption: 'Number of spokes'}, 
+        { name: 'hubRadius', type: 'int', initial: 1, caption: 'Radius of the wheel hub'},
+        { name: 'wheelWidth', type: 'int', initial: 2, caption: 'Width of the wheel'},
         { name: 'windAngle', type: 'int', initial: 45, min: 0, max: 80, caption: 'Front thingy angle?' },
         { name: 'windAngle2', type: 'int', initial: 30, min: 0, max: 80, caption: 'Back thingy angle?' }
     ];
 }
 
-function body(l,w,h) {
-    return translate([0,w/2,h/2],
-      rotate([0,90,0],
-      union(
-        translate([0,0,w/4],cylinder({r: w/2, h: l-w/2})),
-        translate([0,0,l-w/4], sphere({r: w/2})),
-        translate([0,0,w/4], sphere({r: w/2}))
-        )
-      )
-    )
-
-}
-
-function chassis(l, w, h, wheelR, hubR, frontWheelOffset, backWheelOffset, windAngle, windAngle2) {
-  return [ 
-    union(
-        difference(
-            translate([-l/2,-w/2,wheelR], body(l,w,h)),//cube([l,w,h])),
-// scoop out front wheel wells
-            translate([l/2 - frontWheelOffset - wheelR, w/2, wheelR], 
-                rotate([90,0,0], cylinder({r: wheelR + 1, h: 3}))
+function chassis(l, w, h, wheelR, axelR, frontWheelOffset, backWheelOffset, windAngle, windAngle2) {
+    return [ 
+        union(
+            difference(
+                translate([-l/2,-w/2,wheelR],cube([l,w,h])),
+                // scoop out front wheel wells
+                translate([l/2 - frontWheelOffset - wheelR, w/2, wheelR], 
+                    rotate([90,0,0], cylinder({r: wheelR + 1, h: 3}))
+                    ),
+                translate([l/2 - frontWheelOffset - wheelR, -w/2, wheelR], 
+                    rotate([90,0,0], 
+                        cylinder({r: wheelR + 1, h: -3})
+                        )
+                    ),
+                // scoop out back wheel wells
+                translate([-l/2 + backWheelOffset + wheelR, w/2, wheelR], 
+                    rotate([90,0,0], cylinder({r: wheelR + 1, h: 3}))
+                    ),
+                translate([-l/2 + backWheelOffset + wheelR, -w/2, wheelR], 
+                    rotate([90,0,0], 
+                        cylinder({r: wheelR + 1, h: -3})
+                        )
+                    ),
+                // cut off front windsheld
+                translate([l/2, -w/2, wheelR * 2], 
+                    rotate([0,-windAngle,0], 
+                        cube([l,w,h*2])
+                        )
+                    ),
+                // cut off back windsheld
+                translate([-l/2, -w/2, wheelR * 2], 
+                    rotate([0,windAngle2,0], 
+                        cube([-l,w,h*2])
+                        )
+                    )
                 ),
+            // front axle
             translate([l/2 - frontWheelOffset - wheelR, -w/2, wheelR], 
-                rotate([90,0,0], 
-                    cylinder({r: wheelR + 1, h: -3})
-                    )
+                axel(w, axelR)
                 ),
-// scoop out back wheel wells
-            translate([-l/2 + backWheelOffset + wheelR, w/2, wheelR], 
-                rotate([90,0,0], cylinder({r: wheelR + 1, h: 3}))
-                ),
+            // back axle
             translate([-l/2 + backWheelOffset + wheelR, -w/2, wheelR], 
-                rotate([90,0,0], 
-                    cylinder({r: wheelR + 1, h: -3})
-                    )
+                axel(w, axelR)
                 ),
-// cut off front windsheld
-            translate([l/2, -w/2, wheelR * 2], 
-                rotate([0,-windAngle,0], 
-                    translate([0,0,-h/2],cube([l,w,h*4]))
-                    )
-                ),
-// cut off back windsheld
-            translate([-l/2, -w/2, wheelR * 2], 
-                rotate([0,windAngle2,0], 
-                    translate([0,0,-h/2],cube([-l,w,h*2]))
-                    )
-                )
-            ),
-// front axle
-        translate([l/2 - frontWheelOffset - wheelR, -w/2, wheelR], 
-            axel(w,hubR)
-            ),
-// back axle
-        translate([-l/2 + backWheelOffset + wheelR, -w/2, wheelR], 
-            axel(w,hubR)
-            ),
-// front wheels
-        translate([l/2 - frontWheelOffset - wheelR, -w, wheelR], 
-            wheel(params.numSpokes, params.hubDiam, params.wheelWidth, wheelR*2, 0, 0)
-            ),
-        translate([l/2 - frontWheelOffset - wheelR, w, wheelR], 
-            wheel(params.numSpokes, params.hubDiam, params.wheelWidth, wheelR*2, 0, 0)
-            ),
-// bacl wheels
-        translate([-l/2 + backWheelOffset + wheelR, -w, wheelR], 
-            wheel(params.numSpokes, params.hubDiam, params.wheelWidth, wheelR*2, 0, 0)
-            ),
-        translate([-l/2 + backWheelOffset + wheelR, w, wheelR], 
-            wheel(params.numSpokes, params.hubDiam, params.wheelWidth, wheelR*2, 0, 0)
-            )
+            // front wheels
+            wheel(params.numSpokes, params.hubDiam, axelR, params.wheelWidth, wheelR, l/2 - frontWheelOffset - wheelR, -w),
+            wheel(params.numSpokes, params.hubDiam, axelR, params.wheelWidth, wheelR, l/2 - frontWheelOffset - wheelR, w),
+            // back wheels
+            wheel(params.numSpokes, params.hubDiam, axelR, params.wheelWidth, wheelR, -l/2 + backWheelOffset + wheelR, -w),
+            wheel(params.numSpokes, params.hubDiam, axelR, params.wheelWidth, wheelR, -l/2 + backWheelOffset + wheelR, w)
         )
-    ]
+    ];
 }
 
-function axel(length, diameter){
-    var axel = cylinder({r:diameter/2, h:length})
-    return axel.rotateX(-90)
+function axel(length, radius){
+    var axel = cylinder({r: radius, h:length});
+    return axel.rotateX(-90);
     }
 
-function wheel(numSpokes, hubDiam, width, diam, x, y) {
+function wheel(numSpokes, hubRadius, axelR, width, radius, x, y) {
     var outside = difference(
-        translate([x, y, 0],
-            cylinder({r: diam / 2, h: width})
-        ),
-        translate([x, y, 0],
-            cylinder({r: diam / 2 - 0.5, h: width})
-        )
+        cylinder({r: radius, h: width}),
+        cylinder({r: radius - 0.5, h: width})
     );
-    var hub = translate([x, y, 0],
-        cylinder({r: hubDiam / 2, h: width})
-    );
+    var hub = cylinder({r: hubRadius, h: width});
     var spokes = [];
     for(var i = 0; i < numSpokes; i++) {
         spokes.push(rotate([0, 0, 360 / numSpokes * i], 
-            translate([x - 0.125 + hubDiam / 2, y - 0.125, 0], 
-                cube([diam / 2 - hubDiam / 2, 0.25, width])
+            translate([-0.125,-0.125, 0], 
+                cube([radius, 0.25, width])
             )
         ));    
     }
-    return union(outside, hub, union(spokes));
+    return translate([x, y, radius],
+        difference(
+            union(outside, hub, union(spokes)), 
+            cylinder({r: axelR, h: width})
+        )
+    );
 }
 
 function main(params) {
   var l = params.carLength;
   var w = params.carWidth;
-  var h = params.carHight;
+  var h = params.carHeight;
   var wheelR = params.wheelRadius;
-  var hubR = params.hubRadius;
+  var axelR = params.axelRadius;
   var frontWheelOffset = params.frontWheelOffset;
   var backWheelOffset = params.backWheelOffset;
   var windAngle = params.windAngle;
   var windAngle2 = params.windAngle2;
-  //return (translate([-l/2,-w/2,0],cube([l,w,h])));
-    //return (translate(l/2 - frontWheelOffset - wheelR, w/2, wheelR, rotate([90,0,0], cylinder({r: wheelR + 1, h: 10}))));
-    var carChasis = chassis(l, w, h, wheelR, hubR, frontWheelOffset, backWheelOffset, windAngle, windAngle2);
-    return (carChasis );
-    
+  if(axelR >= params.hubRadius) {
+      axelR = params.hubRadius - 0.25
+  }
+    var carChasis = chassis(l, w, h, wheelR, axelR, frontWheelOffset, backWheelOffset, windAngle, windAngle2);
+    return (carChasis);
 }
-
