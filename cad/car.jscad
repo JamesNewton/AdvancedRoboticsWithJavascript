@@ -137,3 +137,17 @@ function main(params) {
     return (carChasis );
     
 }
+
+function main() {
+  return translate([0,0,4],
+      rotate([0,90,0],
+      union(
+    cylinder({r: 3, h: 15}),
+    translate([2,3,2], sphere({r: 2})),
+    translate([2,3,12], sphere({r: 2})),
+    translate([2,-3,2], sphere({r: 2})),
+    translate([2,-3,12], sphere({r: 2}))
+    )
+    )
+    )
+}
