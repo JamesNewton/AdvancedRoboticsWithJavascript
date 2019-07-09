@@ -19,7 +19,7 @@ function getParameterDefinitions() {
         { name: 'carLength', type: 'int', initial: 43, caption: 'Length of the car' }, 
         { name: 'carWidth', type: 'int', initial: 20, caption: 'Width of the car' },
         { name: 'carHeight', type: 'int', initial: 18, caption: 'Height of the car' },
-        { name: 'wheelRadius', type: 'float', initial: 4, caption: 'Radius of the wheel' },
+        { name: 'wheelRadius', type: 'int', initial: 4, caption: 'Radius of the wheel' },
         { name: 'axelRadius', type: 'float', initial: 3, caption: 'Radius of the axel' },
         { name: 'frontWheelOffset', type: 'int', initial: 3, caption: 'Offset for the front wheel' },
         { name: 'backWheelOffset', type: 'int', initial: 3, caption: 'Offset for the back wheel' },
@@ -31,11 +31,24 @@ function getParameterDefinitions() {
     ];
 }
 
+function body(l,w,h) {
+    return translate([0,w/2,h/2],
+      rotate([0,90,0],
+      union(
+        translate([0,0,w/4],cylinder({r: w/2, h: l-w/2})),
+        translate([0,0,l-w/4], sphere({r: w/2})),
+        translate([0,0,w/4], sphere({r: w/2}))
+        )
+      )
+    )
+
+}
+
 function chassis(l, w, h, wheelR, axelR, frontWheelOffset, backWheelOffset, windAngle, windAngle2) {
     return [ 
         union(
             difference(
-                translate([-l/2,-w/2,wheelR],cube([l,w,h])),
+                translate([-l/2,-w/2,wheelR],body(l,w,h)),
                 // scoop out front wheel wells
                 translate([l/2 - frontWheelOffset - wheelR, w/2, wheelR], 
                     rotate([90,0,0], cylinder({r: wheelR + 1, h: 3}))
@@ -55,18 +68,18 @@ function chassis(l, w, h, wheelR, axelR, frontWheelOffset, backWheelOffset, wind
                         )
                     ),
                 // cut off front windsheld
-                translate([l/2, -w/2, wheelR * 2], 
-                    rotate([0,-windAngle,0], 
-                        cube([l,w,h*2])
+                    translate([l/2, -w/2, wheelR * 2], 
+                        rotate([0,-windAngle,0], 
+                            translate([0,0,-h/2],cube([l,w,h*4]))
+                            )
+                        ),
+                // cut off back windsheld
+                    translate([-l/2, -w/2, wheelR * 2], 
+                        rotate([0,windAngle2,0], 
+                            translate([0,0,-h/2],cube([-l,w,h*2]))
+                            )
                         )
                     ),
-                // cut off back windsheld
-                translate([-l/2, -w/2, wheelR * 2], 
-                    rotate([0,windAngle2,0], 
-                        cube([-l,w,h*2])
-                        )
-                    )
-                ),
             // front axle
             translate([l/2 - frontWheelOffset - wheelR, -w/2, wheelR], 
                 axel(w, axelR)
@@ -76,11 +89,11 @@ function chassis(l, w, h, wheelR, axelR, frontWheelOffset, backWheelOffset, wind
                 axel(w, axelR)
                 ),
             // front wheels
-            wheel(params.numSpokes, params.hubDiam, axelR, params.wheelWidth, wheelR, l/2 - frontWheelOffset - wheelR, -w),
-            wheel(params.numSpokes, params.hubDiam, axelR, params.wheelWidth, wheelR, l/2 - frontWheelOffset - wheelR, w),
+            wheel(params.numSpokes, params.hubRadius, axelR, params.wheelWidth, wheelR, l/2 - frontWheelOffset - wheelR, -w),
+            wheel(params.numSpokes, params.hubRadius, axelR, params.wheelWidth, wheelR, l/2 - frontWheelOffset - wheelR, w),
             // back wheels
-            wheel(params.numSpokes, params.hubDiam, axelR, params.wheelWidth, wheelR, -l/2 + backWheelOffset + wheelR, -w),
-            wheel(params.numSpokes, params.hubDiam, axelR, params.wheelWidth, wheelR, -l/2 + backWheelOffset + wheelR, w)
+            wheel(params.numSpokes, params.hubRadius, axelR, params.wheelWidth, wheelR, -l/2 + backWheelOffset + wheelR, -w),
+            wheel(params.numSpokes, params.hubRadius, axelR, params.wheelWidth, wheelR, -l/2 + backWheelOffset + wheelR, w)
         )
     ];
 }
