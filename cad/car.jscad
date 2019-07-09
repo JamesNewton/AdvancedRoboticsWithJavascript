@@ -10,10 +10,12 @@ function getParameterDefinitions() {
         { name: 'numSpokes', type: 'int', initial: 8, caption: 'number of spokes'}, 
         { name: 'hubDiam', type: 'float', initial: 1, caption: 'diameter of the wheel hub'},
         { name: 'wheelWidth', type: 'int', initial: 2, caption: 'width of the wheel'},
+        { name: 'angle', type: 'int', initial: 45, min: 0, max: 80, caption: 'Front thingy angle?' }
+
     ];
 }
 
-function chassis(l, w, h, wheelR, hubR, frontWheelOffset, backWheelOffset) {
+function chassis(l, w, h, wheelR, hubR, frontWheelOffset, backWheelOffset, angle) {
   return [ 
     union(
         difference(
@@ -25,7 +27,11 @@ function chassis(l, w, h, wheelR, hubR, frontWheelOffset, backWheelOffset) {
                 rotate([90,0,0], 
                     cylinder({r: wheelR + 1, h: -3})
                     )
-                )
+                ),
+            translate([l/2, -w/2, wheelR * 2], 
+                rotate([0,-angle,0], 
+                    cube([l,w,Math.sqrt(Math.pow(l,2) + Math.pow(w,2))])))
+
             ),
         translate([l/2 - frontWheelOffset - wheelR, -w/2, wheelR], 
             axel(w,hubR)
@@ -69,17 +75,16 @@ function wheel(numSpokes, hubDiam, width, diam, x, y) {
 }
 
 function main(params) {
-  var l = params.carLength;
-  var w = params.carWidth;
-  var h = params.carHight;
-  var wheelR = params.wheelRadius;
-  var hubR = params.hubRadius;
-  var frontWheelOffset = params.frontWheelOffset;
-  var backWheelOffset = params.backWheelOffset;
-  //return (translate([-l/2,-w/2,0],cube([l,w,h])));
+    var l = params.carLength;
+    var w = params.carWidth;
+    var h = params.carHight;
+    var wheelR = params.wheelRadius;
+    var hubR = params.hubRadius;
+    var frontWheelOffset = params.frontWheelOffset;
+    var backWheelOffset = params.backWheelOffset;
+    //return (translate([-l/2,-w/2,0],cube([l,w,h])));
     //return (translate(l/2 - frontWheelOffset - wheelR, w/2, wheelR, rotate([90,0,0], cylinder({r: wheelR + 1, h: 10}))));
     var carChasis = chassis(l, w, h, wheelR, hubR, frontWheelOffset, backWheelOffset);
     return (carChasis );
-    
-}
+    }
 
