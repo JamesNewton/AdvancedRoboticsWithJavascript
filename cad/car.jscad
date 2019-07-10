@@ -100,14 +100,14 @@ function chassis(length, width, height, wheelRadius, axelRadius, frontWheelOffse
                         )
                     )
                 ),
-                // cut out space for electroinics
-                translate([-length/2 + backWheelOffset, -width / 2 + 3, wheelRadius], 
-                    rotate([45,0,0],
-                        cube([length - (backWheelOffset + frontWheelOffset),Math.sqrt(Math.pow((width - 6),2)/2),-Math.sqrt(Math.pow((width - 6),2)/2)]))
+            // cut out space for electroinics
+            translate([-length/2 + backWheelOffset, -width / 2 + 3, wheelRadius], 
+                rotate([45,0,0],
+                    cube([length - (backWheelOffset + frontWheelOffset),Math.sqrt(Math.pow((width - 6),2)/2),-Math.sqrt(Math.pow((width - 6),2)/2)]))
                 ),
-                //make space for bord
-                translate([-length/2 + backWheelOffset, -width / 2 + 5, wheelRadius],
-                        cube([length - (backWheelOffset + frontWheelOffset), width - 10,5])
+            //make space for bord
+            translate([-length/2 + backWheelOffset, -width / 2 + 5, wheelRadius],
+                    cube([length - (backWheelOffset + frontWheelOffset), width - 10,5])
                 )
             ),
             // front axle
