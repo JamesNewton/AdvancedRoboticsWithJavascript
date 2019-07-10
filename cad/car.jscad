@@ -31,7 +31,9 @@ function getParameterDefinitions() {
         {name: 'wheelWidth', type: 'int', initial: 2, min: 0, max: 9999, caption: 'Width of the wheel'},
         {name: 'servoCenterToTopDist', type: 'int', initial: 1, min: 0, max: 10, caption: 'Center of servo to top?' },
         {name: 'servoCenterToLeftDist', type: 'int', initial: 2, min: 0, max: 20, caption: 'Center of servo to left?' },
-        {name: 'servoCenterToRightDist', type: 'int', initial: 4, min: 0, max: 20, caption: 'Center of servo to right?' }
+        {name: 'servoCenterToRightDist', type: 'int', initial: 4, min: 0, max: 20, caption: 'Center of servo to right?' },
+        {name: 'showBody', type: 'checkbox', checked: true, caption: 'Body'},
+        {name: 'showWheels', type: 'checkbox', checked: true, caption: 'Wheels'}
     ];
 }
 
@@ -54,8 +56,7 @@ function body(length, width, height) {
 }
 
 function chassis(length, width, height, wheelRadius, axelRadius, frontWheelOffset, backWheelOffset, frontAngle, backAngle, servoCenterToRightDist, servoCenterToTopDist, servoCenterToLeftDist) {
-    return [
-    difference(
+    var carBody = difference(
         union(
             difference(
                 translate([-length / 2, -width / 2, wheelRadius],
@@ -109,17 +110,10 @@ function chassis(length, width, height, wheelRadius, axelRadius, frontWheelOffse
                     cube([length - (backWheelOffset + frontWheelOffset), width - 10,5])
                 )
             ),
-
             // front axle
             translate([length / 2 - frontWheelOffset - wheelRadius, -width / 2, wheelRadius], 
                 axel(width, axelRadius)
-                ),
-            // front wheels
-            wheel(params.numSpokes, params.hubRadius, axelRadius, params.wheelWidth, wheelRadius, params.grooveDepth, length / 2 - frontWheelOffset - wheelRadius, -width),
-            wheel(params.numSpokes, params.hubRadius, axelRadius, params.wheelWidth, wheelRadius, params.grooveDepth, length / 2 - frontWheelOffset - wheelRadius, width),
-            // back wheels
-            wheel(params.numSpokes, params.hubRadius, axelRadius, params.wheelWidth, wheelRadius, params.grooveDepth, -length / 2 + backWheelOffset + wheelRadius, -width),
-            wheel(params.numSpokes, params.hubRadius, axelRadius, params.wheelWidth, wheelRadius, params.grooveDepth, -length / 2 + backWheelOffset + wheelRadius, width)
+            )
         ),
         // servo space
         translate([-length/2 + backWheelOffset + 2, -width/2 + 3,wheelRadius + 3], 
@@ -128,8 +122,27 @@ function chassis(length, width, height, wheelRadius, axelRadius, frontWheelOffse
         translate([-length/2 + backWheelOffset, -width/2 + 5,wheelRadius + 3], 
             cube([servoCenterToRightDist + servoCenterToLeftDist + 4,width-10,-servoCenterToTopDist])
         )
-        )
-    ];
+    );
+    var wheels = union(
+        // front wheels
+        wheel(params.numSpokes, params.hubRadius, axelRadius, params.wheelWidth, wheelRadius, params.grooveDepth, length / 2 - frontWheelOffset - wheelRadius, -width),
+        wheel(params.numSpokes, params.hubRadius, axelRadius, params.wheelWidth, wheelRadius, params.grooveDepth, length / 2 - frontWheelOffset - wheelRadius, width),
+        // back wheels
+        wheel(params.numSpokes, params.hubRadius, axelRadius, params.wheelWidth, wheelRadius, params.grooveDepth, -length / 2 + backWheelOffset + wheelRadius, -width),
+        wheel(params.numSpokes, params.hubRadius, axelRadius, params.wheelWidth, wheelRadius, params.grooveDepth, -length / 2 + backWheelOffset + wheelRadius, width)
+    );
+    if(params.showBody === true && params.showWheels === true) {
+        return union(carBody, wheels);
+    }
+    else if(params.showBody === true && params.showWheels === false) {
+        return carBody;
+    }
+    else if(params.showBody === false && params.showWheels === true) {
+        return wheels;
+    }
+    else {
+        return cube();
+    }
 }
 
 function axel(length, radius){
