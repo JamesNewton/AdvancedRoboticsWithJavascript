@@ -13,25 +13,61 @@ Note: your request may or may not be merged.
 - You can edit your files to better merge
 */
 
-
 function getParameterDefinitions() {
     return [
-        {name: 'carLength', type: 'int', initial: 150, min: 0, max: 9999, caption: 'Length of the car'}, 
-        {name: 'carWidth', type: 'int', initial: 80, min: 0, max: 9999, caption: 'Width of the car'},
-        {name: 'carHeight', type: 'int', initial: 50, min: 0, max: 9999,caption: 'Height of the car'},
-        {name: 'frontAngle', type: 'int', initial: 45, min: 0, max: 80, caption: 'Front decline angle'},
-        {name: 'backAngle', type: 'int', initial: 30, min: 0, max: 80, caption: 'Back decline angle'},
-        {name: 'frontWheelOffset', type: 'int', initial: 3, min: 0, max: 9999,caption: 'Offset for the front wheel'},
-        {name: 'backWheelOffset', type: 'int', initial: 3, min: 0, max: 9999,caption: 'Offset for the back wheel'},
-        {name: 'axelRadius', type: 'float', initial: 10, min: 0, max: 9999,caption: 'Radius of the axel'},
-        {name: 'wheelRadius', type: 'int', initial: 25, min: 0, max: 9999,caption: 'Radius of the wheel'},
-        {name: 'grooveDepth', type: 'float', initial: 5, min: 0, max: 9999,caption: 'Depth of the wheel\'s groove'},
-        {name: 'numSpokes', type: 'int', initial: 8, min: 0, max: 9999,caption: 'Number of spokes'}, 
-        {name: 'hubRadius', type: 'float', initial: 7.5, min: 0, max: 9999,caption: 'Radius of the wheel hub'},
-        {name: 'wheelWidth', type: 'int', initial: 10, min: 0, max: 9999,caption: 'Width of the wheel'},
-        {name: 'servoCenterToTopDist', type: 'int', initial: 6, min: 0, max: 9999, caption: 'Center of servo to top?' },
-        {name: 'servoCenterToLeftDist', type: 'int', initial: 5, min: 0, max: 9999, caption: 'Center of servo to left?' },
-        {name: 'servoCenterToRightDist', type: 'int', initial: 17, min: 0, max: 9999, caption: 'Center of servo to right?' }
+        {name: 'carLength', type: 'int', initial: 150, min: 0, max: 9999, 
+            caption: 'Length of the car'}, 
+            
+        {name: 'carWidth', type: 'int', initial: 80, min: 0, max: 9999,
+            caption: 'Width of the car'},
+            
+        {name: 'carHeight', type: 'int', initial: 50, min: 0, max: 9999,
+            caption: 'Height of the car'},
+            
+        {name: 'frontAngle', type: 'int', initial: 45, min: 0, max: 80,
+            caption: 'Front decline angle'},
+            
+        {name: 'backAngle', type: 'int', initial: 30, min: 0, max: 80,
+            caption: 'Back decline angle'},
+            
+        {name: 'frontWheelOffset', type: 'int', initial: 3, min: 0, max: 9999,
+            caption: 'Offset for the front wheel'},
+            
+        {name: 'backWheelOffset', type: 'int', initial: 3, min: 0, max: 9999,
+            caption: 'Offset for the back wheel'},
+            
+        {name: 'axelRadius', type: 'float', initial: 10, min: 0, max: 9999,
+            caption: 'Radius of the axel'},
+            
+        {name: 'wheelRadius', type: 'int', initial: 25, min: 0, max: 9999,
+            caption: 'Radius of the wheel'},
+            
+        {name: 'grooveDepth', type: 'float', initial: 5, min: 0, max: 9999,
+            caption: 'Depth of the wheel\'s groove'},
+            
+        {name: 'numSpokes', type: 'int', initial: 8, min: 0, max: 9999,
+            caption: 'Number of spokes'}, 
+            
+        {name: 'hubRadius', type: 'float', initial: 7.5, min: 0, max: 9999,
+            caption: 'Radius of the wheel hub'},
+            
+        {name: 'wheelWidth', type: 'int', initial: 10, min: 0, max: 9999,
+            caption: 'Width of the wheel'},
+            
+        {name: 'servoCenterToTopDist', type: 'int', initial: 6, min: 0, max: 9999,
+            caption: 'Center of servo to top?'},
+            
+        {name: 'servoCenterToLeftDist', type: 'int', initial: 5, min: 0, max: 9999,
+            caption: 'Center of servo to left?'},
+            
+        {name: 'servoCenterToRightDist', type: 'int', initial: 17, min: 0, max: 9999,
+            caption: 'Center of servo to right?'},
+            
+        {name: 'showBody', type: 'checkbox', checked: true,
+            caption: 'Show body'},
+        
+        {name: 'showWheels', type: 'checkbox', checked: true,
+            caption: 'Show wheels'}
     ];
 }
 
@@ -53,32 +89,37 @@ function body(length, width, height) {
     );
 }
 
-function chassis(length, width, height, wheelRadius, axelRadius, frontWheelOffset, backWheelOffset, frontAngle, backAngle, servoCenterToRightDist, servoCenterToTopDist, servoCenterToLeftDist) {
-    return [
-    difference(
+function chassis(length, width, height, wheelRadius, axelRadius, frontWheelOffset,
+                backWheelOffset, frontAngle, backAngle, servoCenterToRightDist,
+                servoCenterToTopDist, servoCenterToLeftDist) {
+    var carBody = difference(
         union(
             difference(
                 translate([-length / 2, -width / 2, wheelRadius],
                     body(length, width, height)
                 ),
                 // scoop out front wheel wells
-                translate([length / 2 - frontWheelOffset - wheelRadius, width / 2, wheelRadius], 
+                translate([length / 2 - frontWheelOffset - wheelRadius, 
+                            width / 2, wheelRadius], 
                     rotate([90, 0, 0],
                         cylinder({r: wheelRadius + 1, h: 3})
                     )
                 ),
-                translate([length / 2 - frontWheelOffset - wheelRadius, -width / 2, wheelRadius], 
+                translate([length / 2 - frontWheelOffset - wheelRadius, -width / 2,
+                            wheelRadius], 
                     rotate([90, 0, 0], 
                         cylinder({r: wheelRadius + 1, h: -3})
                     )
                 ),
                 // scoop out back wheel wells
-                translate([-length / 2 + backWheelOffset + wheelRadius, width / 2, wheelRadius], 
+                translate([-length / 2 + backWheelOffset + wheelRadius, width / 2,
+                            wheelRadius], 
                     rotate([90, 0, 0],
                         cylinder({r: wheelRadius + 1, h: 3})
                     )
                 ),
-                translate([-length / 2 + backWheelOffset + wheelRadius, -width / 2, wheelRadius], 
+                translate([-length / 2 + backWheelOffset + wheelRadius, -width / 2,
+                            wheelRadius], 
                     rotate([90, 0, 0], 
                         cylinder({r: wheelRadius + 1, h: -3})
                     )
@@ -99,15 +140,18 @@ function chassis(length, width, height, wheelRadius, axelRadius, frontWheelOffse
                         )
                     )
                 ),
-// cut out space for electroinics
+            // cut out space for electroinics
             translate([-length/2 + backWheelOffset, -width / 2 + 3, wheelRadius], 
                 rotate([45,0,0],
-                    cube([length - (backWheelOffset + frontWheelOffset),Math.sqrt(Math.pow((width - 6),2)/2),-Math.sqrt(Math.pow((width - 6),2)/2)]))
+                    cube([length - (backWheelOffset + frontWheelOffset),
+                            Math.sqrt(Math.pow((width - 6), 2) / 2),
+                            -Math.sqrt(Math.pow((width - 6), 2) / 2)]))
                 ),
             translate([-length/2 + backWheelOffset, -width / 2 + 3, 0], 
-                    cube([length - (backWheelOffset + frontWheelOffset),width - 6, wheelRadius])
+                    cube([length - (backWheelOffset + frontWheelOffset),
+                        width - 6, wheelRadius])
                 ),
-//make space for bord
+            //make space for board
             translate([-length/2 + backWheelOffset, -width / 2 + 5, wheelRadius],
                     cube([length - (backWheelOffset + frontWheelOffset), width - 10,5])
                 ),
@@ -116,27 +160,45 @@ function chassis(length, width, height, wheelRadius, axelRadius, frontWheelOffse
                     cube([length * 2, width * 2, wheelRadius * 1.75])
                 )
             ),
-
             // front axle
-            translate([length / 2 - frontWheelOffset - wheelRadius, -width / 2, wheelRadius], 
+            translate([length / 2 - frontWheelOffset - wheelRadius, -width / 2,
+                        wheelRadius], 
                 axel(width, axelRadius)
-                ),
-            // front wheels
-            wheel(params.numSpokes, params.hubRadius, axelRadius, params.wheelWidth, wheelRadius, params.grooveDepth, length / 2 - frontWheelOffset - wheelRadius, -width),
-            wheel(params.numSpokes, params.hubRadius, axelRadius, params.wheelWidth, wheelRadius, params.grooveDepth, length / 2 - frontWheelOffset - wheelRadius, width),
-            // back wheels
-            wheel(params.numSpokes, params.hubRadius, axelRadius, params.wheelWidth, wheelRadius, params.grooveDepth, -length / 2 + backWheelOffset + wheelRadius, -width),
-            wheel(params.numSpokes, params.hubRadius, axelRadius, params.wheelWidth, wheelRadius, params.grooveDepth, -length / 2 + backWheelOffset + wheelRadius, width)
+            )
         ),
- // servo space
-        translate([-length/2 + backWheelOffset + (wheelRadius - servoCenterToLeftDist), -width/2 + 3,wheelRadius + 3], 
-            cube([servoCenterToRightDist + servoCenterToLeftDist,width-6,-servoCenterToTopDist])
+        // servo space
+        translate([-length/2 + backWheelOffset + (wheelRadius - servoCenterToLeftDist),
+                    -width/2 + 3,wheelRadius + 3], 
+            cube([servoCenterToRightDist + servoCenterToLeftDist, width-6,
+                    -servoCenterToTopDist])
         ),
-        translate([-length/2 + backWheelOffset + (wheelRadius - servoCenterToLeftDist), -width/2 + 5,wheelRadius + 3], 
-            cube([servoCenterToRightDist + servoCenterToLeftDist + 4,width-10,-servoCenterToTopDist])
+        translate([-length/2 + backWheelOffset + (wheelRadius - servoCenterToLeftDist),
+                    -width/2 + 5,wheelRadius + 3], 
+            cube([servoCenterToRightDist + servoCenterToLeftDist + 4, width - 10,
+                    -servoCenterToTopDist])
         )
-        )
-    ];
+    );
+    var wheels = union(
+        // front wheels
+        wheel(params.numSpokes, params.hubRadius, axelRadius, params.wheelWidth,
+                wheelRadius, params.grooveDepth,
+                length / 2 - frontWheelOffset - wheelRadius,-width),
+        wheel(params.numSpokes, params.hubRadius, axelRadius, params.wheelWidth,
+                wheelRadius, params.grooveDepth,
+                length / 2 - frontWheelOffset - wheelRadius, width),
+        // back wheels
+        wheel(params.numSpokes, params.hubRadius, axelRadius, params.wheelWidth,
+                wheelRadius, params.grooveDepth,
+                -length / 2 + backWheelOffset + wheelRadius, -width),
+        wheel(params.numSpokes, params.hubRadius, axelRadius, params.wheelWidth,
+                wheelRadius, params.grooveDepth,
+                -length / 2 + backWheelOffset + wheelRadius, width)
+    );
+    var car = [];
+    if(params.showBody) car.push(carBody);
+    if(params.showWheels) car.push(wheels);
+    if(car.length === 0) car.push(cube());
+    return car;
 }
 
 function axel(length, radius){
@@ -178,7 +240,7 @@ function wheel(numSpokes, hubRadius, axelRadius, width, radius, grooveDepth, x, 
     );
 }
 
-function main(params) {
+function main() {
     var length = params.carLength;
     var width = params.carWidth;
     var height = params.carHeight;
@@ -194,7 +256,10 @@ function main(params) {
     var servoCenterToRightDist = params.servoCenterToRightDist;
     var servoCenterToLeftDist = params.servoCenterToLeftDist;
     var servoCenterToTopDist = params.servoCenterToTopDist;
-    var carChasis = chassis(length, width, height, wheelRadius, axelRadius, frontWheelOffset, backWheelOffset, frontAngle, backAngle, servoCenterToRightDist, servoCenterToTopDist, servoCenterToLeftDist);
+    var carChasis = chassis(length, width, height, wheelRadius, axelRadius,
+                            frontWheelOffset, backWheelOffset, frontAngle, backAngle,
+                            servoCenterToRightDist, servoCenterToTopDist, 
+                            servoCenterToLeftDist);
     return (carChasis);
     
 }
