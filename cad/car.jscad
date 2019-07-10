@@ -28,7 +28,10 @@ function getParameterDefinitions() {
         {name: 'grooveDepth', type: 'float', initial: 0.25, min: 0, max: 9999,caption: 'Depth of the wheel\'s groove'},
         {name: 'numSpokes', type: 'int', initial: 8, min: 0, max: 9999,caption: 'Number of spokes'}, 
         {name: 'hubRadius', type: 'float', initial: 1, min: 0, max: 9999,caption: 'Radius of the wheel hub'},
-        {name: 'wheelWidth', type: 'int', initial: 2, min: 0, max: 9999,caption: 'Width of the wheel'}
+        {name: 'wheelWidth', type: 'int', initial: 2, min: 0, max: 9999,caption: 'Width of the wheel'},
+        {name: 'servoCenterToTopDist', type: 'int', initial: 1, min: 0, max: 10, caption: 'Center of servo to top?' },
+        {name: 'servoCenterToLeftDist', type: 'int', initial: 2, min: 0, max: 20, caption: 'Center of servo to left?' },
+        {name: 'servoCenterToRightDist', type: 'int', initial: 4, min: 0, max: 20, caption: 'Center of servo to right?' }
     ];
 }
 
@@ -50,8 +53,9 @@ function body(length, width, height) {
     );
 }
 
-function chassis(length, width, height, wheelRadius, axelRadius, frontWheelOffset, backWheelOffset, frontAngle, backAngle) {
-    return [ 
+function chassis(length, width, height, wheelRadius, axelRadius, frontWheelOffset, backWheelOffset, frontAngle, backAngle, servoCenterToRightDist, servoCenterToTopDist, servoCenterToLeftDist) {
+    return [
+    difference(
         union(
             difference(
                 translate([-length / 2, -width / 2, wheelRadius],
@@ -91,17 +95,23 @@ function chassis(length, width, height, wheelRadius, axelRadius, frontWheelOffse
                 translate([-length / 2, -width / 2, wheelRadius * 2], 
                     rotate([0, backAngle, 0], 
                         translate([0, 0, -height / 2],
-                            cube([-length, width, height *2 ])
+                            cube([-length, width, height * 2])
                         )
                     )
+                ),
+// cut out space for electroinics
+            translate([-length/2 + backWheelOffset, -width / 2 + 3, wheelRadius], 
+                rotate([45,0,0],
+                    cube([length - (backWheelOffset + frontWheelOffset),Math.sqrt(Math.pow((width - 6),2)/2),-Math.sqrt(Math.pow((width - 6),2)/2)]))
+                ),
+//make space for bord
+            translate([-length/2 + backWheelOffset, -width / 2 + 5, wheelRadius],
+                    cube([length - (backWheelOffset + frontWheelOffset), width - 10,5])
                 )
             ),
+
             // front axle
             translate([length / 2 - frontWheelOffset - wheelRadius, -width / 2, wheelRadius], 
-                axel(width, axelRadius)
-                ),
-            // back axle
-            translate([-length / 2 + backWheelOffset + wheelRadius, -width / 2, wheelRadius], 
                 axel(width, axelRadius)
                 ),
             // front wheels
@@ -110,6 +120,14 @@ function chassis(length, width, height, wheelRadius, axelRadius, frontWheelOffse
             // back wheels
             wheel(params.numSpokes, params.hubRadius, axelRadius, params.wheelWidth, wheelRadius, params.grooveDepth, -length / 2 + backWheelOffset + wheelRadius, -width),
             wheel(params.numSpokes, params.hubRadius, axelRadius, params.wheelWidth, wheelRadius, params.grooveDepth, -length / 2 + backWheelOffset + wheelRadius, width)
+        ),
+ // servo space
+        translate([-length/2 + backWheelOffset + 2, -width/2 + 3,wheelRadius + 3], 
+            cube([servoCenterToRightDist + servoCenterToLeftDist,width-6,-servoCenterToTopDist])
+        ),
+        translate([-length/2 + backWheelOffset, -width/2 + 5,wheelRadius + 3], 
+            cube([servoCenterToRightDist + servoCenterToLeftDist + 4,width-10,-servoCenterToTopDist])
+        )
         )
     ];
 }
@@ -117,9 +135,9 @@ function chassis(length, width, height, wheelRadius, axelRadius, frontWheelOffse
 function axel(length, radius){
     var axel = cylinder({r: radius, h: length});
     return axel.rotateX(-90);
-}
+    }
 
-function wheel(numSpokes, hubRadius, axelRadius, width, grooveDepth, x, y) {
+function wheel(numSpokes, hubRadius, axelRadius, width, radius, grooveDepth, x, y) {
     var outside = difference(
         cylinder({r: radius, h: width}),
         cylinder({r: radius - (grooveDepth * 1.5), h: width}),
@@ -164,8 +182,11 @@ function main(params) {
     var frontAngle = params.frontAngle;
     var backAngle = params.backAngle;
     if(axelRadius >= params.hubRadius) {
-          axelRadius = params.hubRadius - 0.25
-      }
-    var carChasis = chassis(length, width, height, wheelRadius, axelRadius, frontWheelOffset, backWheelOffset, frontAngle, backAngle);
+        axelRadius = params.hubRadius - 0.25
+        }
+    var servoCenterToRightDist = params.servoCenterToRightDist;
+    var servoCenterToLeftDist = params.servoCenterToLeftDist;
+    var servoCenterToTopDist = params.servoCenterToTopDist;
+    var carChasis = chassis(length, width, height, wheelRadius, axelRadius, frontWheelOffset, backWheelOffset, frontAngle, backAngle, servoCenterToRightDist, servoCenterToTopDist, servoCenterToLeftDist);
     return (carChasis);
-}
+    }
