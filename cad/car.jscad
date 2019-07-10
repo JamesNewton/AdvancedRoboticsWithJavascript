@@ -21,14 +21,14 @@ function getParameterDefinitions() {
         {name: 'carHeight', type: 'int', initial: 18, min: 0, max: 9999,caption: 'Height of the car'},
         {name: 'frontAngle', type: 'int', initial: 45, min: 0, max: 80, caption: 'Front decline angle'},
         {name: 'backAngle', type: 'int', initial: 30, min: 0, max: 80, caption: 'Back decline angle'},
-        {name: 'frontWheelOffset', type: 'int', initial: 3, min: 0, max: 9999,caption: 'Offset for the front wheel'},
-        {name: 'backWheelOffset', type: 'int', initial: 3, min: 0, max: 9999,caption: 'Offset for the back wheel'},
-        {name: 'axelRadius', type: 'float', initial: 3, min: 0, max: 9999,caption: 'Radius of the axel'},
-        {name: 'wheelRadius', type: 'int', initial: 4, min: 0, max: 9999,caption: 'Radius of the wheel'},
-        {name: 'grooveDepth', type: 'float', initial: 0.25, min: 0, max: 9999,caption: 'Depth of the wheel\'s groove'},
-        {name: 'numSpokes', type: 'int', initial: 8, min: 0, max: 9999,caption: 'Number of spokes'}, 
-        {name: 'hubRadius', type: 'float', initial: 1, min: 0, max: 9999,caption: 'Radius of the wheel hub'},
-        {name: 'wheelWidth', type: 'int', initial: 2, min: 0, max: 9999,caption: 'Width of the wheel'},
+        {name: 'frontWheelOffset', type: 'int', initial: 3, min: 0, max: 9999, caption: 'Offset for the front wheel'},
+        {name: 'backWheelOffset', type: 'int', initial: 3, min: 0, max: 9999, caption: 'Offset for the back wheel'},
+        {name: 'axelRadius', type: 'float', initial: 3, min: 0, max: 9999, caption: 'Radius of the axel'},
+        {name: 'wheelRadius', type: 'int', initial: 4, min: 0, max: 9999, caption: 'Radius of the wheel'},
+        {name: 'grooveDepth', type: 'float', initial: 0.25, min: 0, max: 9999, caption: 'Depth of the wheel\'s groove'},
+        {name: 'numSpokes', type: 'int', initial: 8, min: 0, max: 9999, caption: 'Number of spokes'}, 
+        {name: 'hubRadius', type: 'float', initial: 1, min: 0, max: 9999, caption: 'Radius of the wheel hub'},
+        {name: 'wheelWidth', type: 'int', initial: 2, min: 0, max: 9999, caption: 'Width of the wheel'},
         {name: 'servoCenterToTopDist', type: 'int', initial: 1, min: 0, max: 10, caption: 'Center of servo to top?' },
         {name: 'servoCenterToLeftDist', type: 'int', initial: 2, min: 0, max: 20, caption: 'Center of servo to left?' },
         {name: 'servoCenterToRightDist', type: 'int', initial: 4, min: 0, max: 20, caption: 'Center of servo to right?' }
@@ -99,12 +99,12 @@ function chassis(length, width, height, wheelRadius, axelRadius, frontWheelOffse
                         )
                     )
                 ),
-// cut out space for electroinics
+            // cut out space for electroinics
             translate([-length/2 + backWheelOffset, -width / 2 + 3, wheelRadius], 
                 rotate([45,0,0],
                     cube([length - (backWheelOffset + frontWheelOffset),Math.sqrt(Math.pow((width - 6),2)/2),-Math.sqrt(Math.pow((width - 6),2)/2)]))
                 ),
-//make space for bord
+            //make space for bord
             translate([-length/2 + backWheelOffset, -width / 2 + 5, wheelRadius],
                     cube([length - (backWheelOffset + frontWheelOffset), width - 10,5])
                 )
@@ -121,7 +121,7 @@ function chassis(length, width, height, wheelRadius, axelRadius, frontWheelOffse
             wheel(params.numSpokes, params.hubRadius, axelRadius, params.wheelWidth, wheelRadius, params.grooveDepth, -length / 2 + backWheelOffset + wheelRadius, -width),
             wheel(params.numSpokes, params.hubRadius, axelRadius, params.wheelWidth, wheelRadius, params.grooveDepth, -length / 2 + backWheelOffset + wheelRadius, width)
         ),
- // servo space
+        // servo space
         translate([-length/2 + backWheelOffset + 2, -width/2 + 3,wheelRadius + 3], 
             cube([servoCenterToRightDist + servoCenterToLeftDist,width-6,-servoCenterToTopDist])
         ),
