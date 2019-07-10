@@ -16,22 +16,22 @@ Note: your request may or may not be merged.
 
 function getParameterDefinitions() {
     return [
-        {name: 'carLength', type: 'int', initial: 43, min: 0, max: 9999, caption: 'Length of the car'}, 
-        {name: 'carWidth', type: 'int', initial: 20, min: 0, max: 9999, caption: 'Width of the car'},
-        {name: 'carHeight', type: 'int', initial: 18, min: 0, max: 9999,caption: 'Height of the car'},
+        {name: 'carLength', type: 'int', initial: 150, min: 0, max: 9999, caption: 'Length of the car'}, 
+        {name: 'carWidth', type: 'int', initial: 80, min: 0, max: 9999, caption: 'Width of the car'},
+        {name: 'carHeight', type: 'int', initial: 50, min: 0, max: 9999,caption: 'Height of the car'},
         {name: 'frontAngle', type: 'int', initial: 45, min: 0, max: 80, caption: 'Front decline angle'},
         {name: 'backAngle', type: 'int', initial: 30, min: 0, max: 80, caption: 'Back decline angle'},
         {name: 'frontWheelOffset', type: 'int', initial: 3, min: 0, max: 9999,caption: 'Offset for the front wheel'},
         {name: 'backWheelOffset', type: 'int', initial: 3, min: 0, max: 9999,caption: 'Offset for the back wheel'},
-        {name: 'axelRadius', type: 'float', initial: 3, min: 0, max: 9999,caption: 'Radius of the axel'},
-        {name: 'wheelRadius', type: 'int', initial: 4, min: 0, max: 9999,caption: 'Radius of the wheel'},
-        {name: 'grooveDepth', type: 'float', initial: 0.25, min: 0, max: 9999,caption: 'Depth of the wheel\'s groove'},
+        {name: 'axelRadius', type: 'float', initial: 10, min: 0, max: 9999,caption: 'Radius of the axel'},
+        {name: 'wheelRadius', type: 'int', initial: 25, min: 0, max: 9999,caption: 'Radius of the wheel'},
+        {name: 'grooveDepth', type: 'float', initial: 5, min: 0, max: 9999,caption: 'Depth of the wheel\'s groove'},
         {name: 'numSpokes', type: 'int', initial: 8, min: 0, max: 9999,caption: 'Number of spokes'}, 
-        {name: 'hubRadius', type: 'float', initial: 1, min: 0, max: 9999,caption: 'Radius of the wheel hub'},
-        {name: 'wheelWidth', type: 'int', initial: 2, min: 0, max: 9999,caption: 'Width of the wheel'},
-        {name: 'servoCenterToTopDist', type: 'int', initial: 1, min: 0, max: 100, caption: 'Center of servo to top?' },
-        {name: 'servoCenterToLeftDist', type: 'int', initial: 2, min: 0, max: 100, caption: 'Center of servo to left?' },
-        {name: 'servoCenterToRightDist', type: 'int', initial: 4, min: 0, max: 100, caption: 'Center of servo to right?' }
+        {name: 'hubRadius', type: 'float', initial: 7.5, min: 0, max: 9999,caption: 'Radius of the wheel hub'},
+        {name: 'wheelWidth', type: 'int', initial: 10, min: 0, max: 9999,caption: 'Width of the wheel'},
+        {name: 'servoCenterToTopDist', type: 'int', initial: 6, min: 0, max: 9999, caption: 'Center of servo to top?' },
+        {name: 'servoCenterToLeftDist', type: 'int', initial: 5, min: 0, max: 9999, caption: 'Center of servo to left?' },
+        {name: 'servoCenterToRightDist', type: 'int', initial: 17, min: 0, max: 9999, caption: 'Center of servo to right?' }
     ];
 }
 
