@@ -164,7 +164,7 @@ function wheel(numSpokes, hubRadius, axelRadius, width, radius, grooveDepth, x, 
             )
         ));    
     }
-    return translate([x, y, radius],
+    return translate([x, y, 0],
         difference(
             union(outside, hub, union(spokes)), 
             cylinder({r: axelRadius, h: width}),
